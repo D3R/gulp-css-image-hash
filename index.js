@@ -42,7 +42,6 @@ function cssImageHash(webPath) {
             });
             
             async.eachSeries(pairs, function(tuple, callback) {
-                
                 var md5 = crypto.createHash('md5'),
                     file = fs.ReadStream(webPath + tuple[1]),
                     hash = '';
@@ -50,9 +49,14 @@ function cssImageHash(webPath) {
                 file.on('data', function(d) {
                     md5.update(d);
                 });
+                
                 file.on('end', function() {
                     hash = md5.digest('hex');
                     asString = asString.replace(tuple[0], 'url(' + tuple[1] + '?h=' + hash + ')');
+                    callback();
+                });
+                
+                file.on('error', function() {
                     callback();
                 });
             }, function (err) {

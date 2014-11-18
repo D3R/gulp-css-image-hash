@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "description": "Append a hash of the images value to references in CSS",
   "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/d3r/gulp-css-image-hash.git"
+  },
+  "author": {
+    "name": "Stuart Loxton",
+    "email": "stuart@d3r.com",
+    "url": "http://d3r.com"
+  },
+  "license": "MIT",
   "dependencies": {
     "async": "^0.9.0",
     "through2": "*"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://bitbucket.org/stuartloxton/gulp-css-image-hash.git"
+  "devDependencies": {
+    "should": "^4.3.0"
   }
 }
