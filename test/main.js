@@ -79,6 +79,23 @@ describe('gulp-css-image-hash', function() {
             });
         });
         
+        it('should accept a modifying function as a parameter', function(done) {
+            var fakeFile = new File({
+                contents: new Buffer('body { background: url(a.png); } a { background: url(d3r-logo.png); }')
+            });
+            
+            var hasher = imagehash(function(path) {
+                return 'test/examples/a.png';
+            });
+            hasher.write(fakeFile);
+            
+            hasher.once('data', function(file) {
+                assert(file.isBuffer());
+                assert.equal(file.contents.toString(), 'body { background: url(a.png?h=687d617708eef5770369b08eac3da5c3); } a { background: url(d3r-logo.png?h=687d617708eef5770369b08eac3da5c3); }');
+                done();
+            });
+        });
+        
         it('should not update un-resolvable resources', function(done) {
             var fakeFile = new File({
                 contents: new Buffer('body { background: url(a.png); } a { background: url("d3r-logo.png"); }')

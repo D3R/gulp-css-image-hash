@@ -42,8 +42,20 @@ function cssImageHash(webPath) {
             });
             
             async.eachSeries(pairs, function(tuple, callback) {
+                var path = tuple[1];
+                
+                if (typeof(webPath) == 'function') {
+                    path = webPath(path);   
+                } else {
+                    path = webPath + path;                   
+                }
+                
+                if (!path) {
+                    return callback();
+                }
+
                 var md5 = crypto.createHash('md5'),
-                    file = fs.ReadStream(webPath + tuple[1]),
+                    file = fs.ReadStream(path),
                     hash = '';
                 
                 file.on('data', function(d) {
