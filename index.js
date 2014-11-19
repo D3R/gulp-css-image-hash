@@ -3,11 +3,12 @@
 var through = require('through2'),
     async   = require('async'),
     fs      = require('fs'),
-    crypto  = require('crypto');
+    crypto  = require('crypto'),
+    extname = require('path').extname;
 
 var PLUGIN_NAME = 'gulp-css-image-hash';
 
-function cssImageHash(webPath) {
+function cssImageHash(webPath, includeFileExtensions) {
     var stream = through.obj(function(file, enc, cb) {
         var that = this;
         
@@ -43,6 +44,14 @@ function cssImageHash(webPath) {
             
             async.eachSeries(pairs, function(tuple, callback) {
                 var path = tuple[1];
+                
+                if (Array.isArray(includeFileExtensions)) {
+                    var extension = extname(tuple[1]).slice(1);
+                    
+                    if(includeFileExtensions.indexOf(extension) < 0) {
+                        return callback();   
+                    }
+                }
                 
                 if (typeof(webPath) == 'function') {
                     path = webPath(path);   

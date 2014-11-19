@@ -110,5 +110,23 @@ describe('gulp-css-image-hash', function() {
                 done();
             });
         });
+        
+        it('should only inspect paths with specified extensions', function(done) {
+            var fakeFile = new File({
+                contents: new Buffer('body { background: url(a.jpg); } a { background: url("d3r-logo.png"); }')
+            });
+            
+            var hasher = imagehash(function(path) {
+                assert.equal(path, 'a.jpg');
+                return false;
+            }, ['jpg']);
+            hasher.write(fakeFile);
+            
+            hasher.once('data', function(file) {
+                assert(file.isBuffer());
+                assert.equal(file.contents.toString(), 'body { background: url(a.jpg); } a { background: url("d3r-logo.png"); }');
+                done();
+            });
+        });
     });
 });
