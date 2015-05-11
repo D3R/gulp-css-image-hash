@@ -38,6 +38,11 @@ function cssImageHash(webPath, includeFileExtensions) {
                 if (path[0] == '"' || path[0] == "'") {
                     path = path.slice(1).slice(0, -1);
                 }
+
+                //If the path does not start with a '/', add it
+                if (path[0] != '/') {
+                    path = '/' + path;
+                }
                 
                 pairs.push([curValue, path]);
             });
@@ -55,7 +60,7 @@ function cssImageHash(webPath, includeFileExtensions) {
                 
                 if (typeof(webPath) == 'function') {
                     path = webPath(path);   
-                } else {
+                } else if (typeof(webPath) != 'undefined') {
                     path = webPath + path;                   
                 }
                 
@@ -77,7 +82,8 @@ function cssImageHash(webPath, includeFileExtensions) {
                     callback();
                 });
                 
-                file.on('error', function() {
+                file.on('error', function(error) {
+                    console.log(error.message);
                     callback();
                 });
             }, function (err) {
