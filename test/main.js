@@ -48,6 +48,21 @@ describe('gulp-css-image-hash', function() {
                 done();
             });
         });
+
+        it('should ignore data urls', function(done) {
+            var fakeFile = new File({
+                contents: new Buffer('body { background: url(data:image/gif;base64,R0lGO); }')
+            });
+
+            var hasher = imagehash('test/examples/');
+            hasher.write(fakeFile);
+
+            hasher.once('data', function(file) {
+                assert(file.isBuffer());
+                assert.equal(file.contents.toString(), 'body { background: url(data:image/gif;base64,R0lGO); }');
+                done();
+            });
+        });
         
         it('should update resolvable resource', function(done) {
             var fakeFile = new File({

@@ -4,7 +4,8 @@ var through = require('through2'),
     async   = require('async'),
     fs      = require('fs'),
     crypto  = require('crypto'),
-    extname = require('path').extname;
+    extname = require('path').extname,
+    gutil   = require('gulp-util');
 
 var PLUGIN_NAME = 'gulp-css-image-hash';
 
@@ -38,11 +39,6 @@ function cssImageHash(webPath, includeFileExtensions) {
                 if (path[0] == '"' || path[0] == "'") {
                     path = path.slice(1).slice(0, -1);
                 }
-
-                //If the path does not start with a '/', add it
-                if (path[0] != '/') {
-                    path = '/' + path;
-                }
                 
                 pairs.push([curValue, path]);
             });
@@ -56,6 +52,10 @@ function cssImageHash(webPath, includeFileExtensions) {
                     if(includeFileExtensions.indexOf(extension) < 0) {
                         return callback();   
                     }
+                }
+
+                if (path.substr(0, 4) == 'data') {
+                    return callback();
                 }
                 
                 if (typeof(webPath) == 'function') {
@@ -83,7 +83,7 @@ function cssImageHash(webPath, includeFileExtensions) {
                 });
                 
                 file.on('error', function(error) {
-                    console.log(error.message);
+                    gutil.log('gulp-css-image-hash: Skipping ' + path);
                     callback();
                 });
             }, function (err) {
